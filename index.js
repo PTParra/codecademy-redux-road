@@ -9,3 +9,61 @@
     mishaps like overturning their wagon and losing their provisions.
 */
 
+const initialWagonState = {
+    supplies: 100,
+    distance: 0,
+    days: 0
+}
+
+const state = (state = initialWagonState, action) => {
+
+    switch (action.type) {
+        case 'gather':
+            return {
+                ...state,
+                supplies: state.supplies + 15,
+                days: state.days + 1
+            }    
+        case 'travel':
+            if(state.supplies - (20 * action.payload) < 0){
+                return state;
+            }
+            return {
+                supplies: state.supplies - (20 * action.payload),
+                distance: state.distance + (10 * action.payload),
+                days: state.days + action.payload
+            }    
+        case 'tippedWagon':
+            return {
+                ...state,
+                supplies: state.supplies - 30,
+                days: state.days + 1
+            }    
+        default:
+            return state
+    }
+}
+
+let wagon = state(undefined , 'travel');
+
+console.log("\nOur adventure starts! My stats:", wagon , "\n");
+
+wagon = state(wagon, {type: 'travel', payload: 1});
+
+console.log("Travel time! My stats:", wagon , "\n");
+
+wagon = state(wagon, {type: 'gather'});
+
+console.log("Time to grab some resources! My stats:", wagon , "\n");
+
+wagon = state(wagon, {type: 'tippedWagon'});
+
+console.log("Going through a rushin river was a bad idea... My stats:", wagon , "\n");
+
+wagon = state(wagon, {type: 'travel', payload: 3});
+
+console.log("Travel time for 3 days! My stats:", wagon , "\n");
+
+wagon = state(wagon, {type: 'travel', payload: 3});
+
+console.log("Travel time for 3 days! Wait... i dont have resources... My stats:", wagon , "\n");
